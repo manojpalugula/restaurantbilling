@@ -1,0 +1,127 @@
+#include <stdio.h>
+
+void prtline();
+
+void main()
+{
+    struct about
+    {
+        char name[50];
+        char adrs[100];
+    };
+
+    struct about s[10];
+
+    int n, quant, price, gst, itemTotal, totalGst, grandTotal = 0;
+    char choice;
+    int itemCount = 0;
+
+    // Array to store details of all ordered items
+    struct order
+    {
+        int itemNo;
+        int quantity;
+        int price;
+        int totalGst;
+        int total;
+    } orders[50];
+
+    // Menu items and prices
+    char *menuItems[] = {
+        "Cold-drinks (200ml)", "Pizza", "Sandwich", "Pasta", "Misal Pav", 
+        "Chicken Rice", "Samosa", "Salad", "Burger", "Chicken 65", 
+        "Noodles", "Pav Bhaji", "Soup", "Dosa", "Paneer Masala"};
+    int prices[] = {25, 200, 60, 40, 50, 80, 30, 50, 100, 60, 60, 85, 45, 60, 120};
+
+    printf("\n                        ____________ Menu Card  _________________\n\n");
+
+    for (int i = 0; i < 15; i++)
+    {
+        printf(" %2d) %-20s - %3drs\n", i + 1, menuItems[i], prices[i]);
+    }
+
+    printf("\n ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+
+    printf("\n CUSTOMER INFORMATION :\n ");
+    printf("\n Customer Name: ");
+    scanf(" %[^\n]%*c", s[1].name);
+
+    printf("\n Customer Address: ");
+    scanf(" %[^\n]%*c", s[1].adrs);
+    printf("\n ******************************************************************************* \n\n");
+
+    do
+    {
+        printf("\n Enter the number of item: ");
+        scanf("%d", &n);
+
+        if (n < 1 || n > 15)
+        {
+            printf("\n Invalid item number! Please select an item from the menu.\n");
+            continue;
+        }
+
+        printf("\n Enter the Quantity of items: ");
+        scanf("%d", &quant);
+
+        price = prices[n - 1]; // Get the price of the selected item
+
+        // Apply GST only if price is ₹100 or above
+        if (price >= 100)
+            gst = (price * 18) / 100;
+        else
+            gst = 0;
+
+        totalGst = gst * quant; // Total GST for the quantity ordered
+        itemTotal = (price + gst) * quant;
+        grandTotal += itemTotal;
+
+        // Store order details
+        orders[itemCount].itemNo = n;
+        orders[itemCount].quantity = quant;
+        orders[itemCount].price = price;
+        orders[itemCount].totalGst = totalGst;
+        orders[itemCount].total = itemTotal;
+        itemCount++;
+
+        printf("\n Do you want to order another item? (y/n): ");
+        scanf(" %c", &choice);
+
+    } while (choice == 'y' || choice == 'Y');
+
+    int discount = 0;
+    // Apply discount if the total exceeds ₹2000
+    if (grandTotal > 2000)
+    {
+        discount = (grandTotal * 10) / 100;
+        grandTotal -= discount;
+    }
+
+    printf("\n\n |***************************** Hotel Amrut ***********************************|\n");
+
+    printf("\n Customer Name: %s\n", s[1].name);
+    printf("\n Customer Address: %s\n", s[1].adrs);
+    prtline();
+
+    printf("\n  Item                   Quantity    Price     Total GST     Total\n");
+    for (int i = 0; i < itemCount; i++)
+    {
+        printf("  %-20s %8d    %5d    %10d    %6d\n",
+               menuItems[orders[i].itemNo - 1], orders[i].quantity, orders[i].price,
+               orders[i].totalGst, orders[i].total);
+    }
+
+    prtline();
+    if (discount > 0)
+    {
+        printf("\n Discount Applied: %d\n", discount);
+    }
+    printf("\n Final Bill Amount: %d\n", grandTotal);
+    prtline();
+    printf("\nThank you! Do visit again\n");
+}
+
+void prtline()
+{
+    printf("\n ============================================================================= \n");
+}
